@@ -1,0 +1,40 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.android.tools.lint:lint-api:26.1.3'
+    compile 'com.android.tools.lint:lint-checks:26.1.3'
+}
+
+jar {
+    manifest {
+        attributes 'Manifest-Version': 1.0
+        attributes 'Lint-Registry': 'com.bhatt.milan.customlint.CustomLintRegistory'
+    }
+}
+
+defaultTasks 'assemble'
+
+/**
+ * Copies the jar file containing your lint module
+ * into the .android/lint directory in your home folder.
+ *
+ * */
+task copyLintJar(type: Copy) {
+    description = 'Copies the lint jar file into the {user.home}/.android/lint folder.'
+    from('build/libs/')
+    into(System.getProperty("user.home") + '/.android/lint')
+    include("*.jar")
+}
+
+build.finalizedBy(copyLintJar)
